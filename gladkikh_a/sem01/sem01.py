@@ -1,11 +1,12 @@
 import idk
+from cat.meow import meow_meow
 
 print(idk)
 
 
 def main():
     print("MEOW")
-    print("1000")
+    meow_meow()
 
 
 print(f"__name__ = {__name__}")
