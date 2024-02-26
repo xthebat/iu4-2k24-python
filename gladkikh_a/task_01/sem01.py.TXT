@@ -1,0 +1,4 @@
+from harchi import *
+
+har("Russia")
+har("Vietnam")
