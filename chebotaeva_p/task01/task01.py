@@ -1,7 +1,7 @@
 import piu
 
 def main ():
-    print ('piu-piu blat ne ponatla nihua')
+    print ('piu-piu ya nichivo ne znau')
     
 
 if __name__ == '__main__':
