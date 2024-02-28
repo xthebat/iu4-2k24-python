@@ -1,2 +1,0 @@
-def greetu():
-    print("wowhello")
