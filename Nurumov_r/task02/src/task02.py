@@ -6,9 +6,10 @@ def collect_tree(lvl: int, path: str):
     lvl = lvl - 1
     array = os.listdir(path)
     for element in sorted(array):
-        if os.path.isdir(f"{path}/{element}"):
+        if os.path.isdir(os.path.join(path, element)):
             if lvl > 0:
-                elements.insert(0, collect_tree(lvl, f"{path}/{element}"))
+                elements.insert(0, collect_tree(
+                    lvl, os.path.join(path, element)))
             elements.insert(0, f"\033[34m{element}")
 
         else:
