@@ -2,37 +2,45 @@ import os
 import argparse
 
 
-def generate_tree(directory, req_depth, current_depth = 1, decor_prefix=""):
+BRANCH_END = "└── "
+BRANCH_LEFT = "│   "
+BRANCH_RIGHT = "├── "
+BRANCH_SPACE = "    "
+
+
+def generate_tree(directory, req_depth, current_depth=1):
+    tree = []
+    # get directory name
+    tree.append((os.path.basename(os.path.abspath(directory))))
     if current_depth > req_depth:
-        return
-    # print directory name
-    cur_dir = (decor_prefix + os.path.basename(directory))
-    if cur_dir == "":           # user used a relative path
-        print(os.path.basename(os.path.abspath(directory)))
-    else:                       # user used an absolute path
-        print(cur_dir)
-    # print the list of the items contained in directory
+        return tree[0]
+    # get the list of the items contained in directory
     list_of_items = os.listdir(directory)
-    num_of_items = len(list_of_items)
-    i = 0                       # index of the current item
     for item in list_of_items:
-        i += 1
-        if i == num_of_items:   # end item of the branch
-            print(decor_prefix + "\\-- " + item)
-        else:
-            print(decor_prefix + "|-- " + item)
-        # check if current item is directory
         item_path = os.path.join(directory, item)
         if os.path.isdir(item_path):
-            if i == num_of_items:
-                new_decor_prefix = decor_prefix + "    "
-            else:
-                new_decor_prefix = decor_prefix + "|   "
-            # recursive call of the generate_tree() function
-            generate_tree(item_path, req_depth,
-                          current_depth + 1, new_decor_prefix)
+            item = (generate_tree(item_path, req_depth,
+                                  current_depth + 1))
+        tree.append(item)
+    return tree
 
-if __name__ == "__main__" :
+
+def print_tree(tree, decor_prefix=""):
+    print(tree.pop(0))
+    for index, item in enumerate(tree, 1):
+        if index == len(tree):
+            print(decor_prefix + BRANCH_END, end='')
+            decor_plus = BRANCH_SPACE
+        else:
+            print(decor_prefix + BRANCH_RIGHT, end='')
+            decor_plus = BRANCH_LEFT
+        if isinstance(item, list):
+            print_tree(item, decor_prefix + decor_plus)
+        else:
+            print(item)
+
+
+if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="displays the directory structure as a tree with a specified depth")
     parser.add_argument("-L", "--depth", type=int, default=1,
@@ -40,4 +48,4 @@ if __name__ == "__main__" :
     parser.add_argument("directory", type=str, help="Path to the directory")
 
     args = parser.parse_args()
-    generate_tree(args.directory, args.depth)
+    print_tree(generate_tree(args.directory, args.depth))
