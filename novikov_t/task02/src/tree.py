@@ -2,7 +2,7 @@ import os
 import argparse
 
 
-BRANCH_END = "└── "
+BRANCH_END = "└── " 
 BRANCH_LEFT = "│   "
 BRANCH_RIGHT = "├── "
 BRANCH_SPACE = "    "

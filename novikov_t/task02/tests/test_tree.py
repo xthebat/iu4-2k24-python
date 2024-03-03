@@ -1,7 +1,7 @@
 import os
 import sys
 import pytest
-from src.tree import generate_tree
+from src.tree import generate_tree, print_tree
 
 
 @pytest.mark.parametrize(
@@ -33,13 +33,11 @@ def test_generate_tree(dir_number: int, depth: int, referent_file: str):
 
         original_stdout = sys.stdout
         # redirect cout to a file output.txt
-        with open('output.txt', 'w') as test_output:
+        with open('output.txt', 'w', encoding='utf-8') as test_output:
             sys.stdout = test_output
             # fill in the file with the output of the tree()
-            if dir_number == 1:
-                generate_tree(test_dir, depth)
-            else:
-                generate_tree(test_dir_2, depth)
+            print_tree(generate_tree(
+                test_dir if dir_number == 1 else test_dir_2, depth))
         sys.stdout = original_stdout
 
         # get path to the referent file
