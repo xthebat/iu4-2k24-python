@@ -1,0 +1,22 @@
+{blue}{head_dir}{reset}
+|---{blue}dir_1{reset}
+|   |---file_2.txt
+|   |---{blue}dir_1{reset}
+|   |---{blue}dir_2{reset}
+|   |---file_3.txt
+|   |---{blue}dir_3{reset}
+|   '---file_1.txt
+|---{blue}dir_2{reset}
+|   |---file_2.txt
+|   |---{blue}dir_1{reset}
+|   |---{blue}dir_2{reset}
+|   |---file_3.txt
+|   |---{blue}dir_3{reset}
+|   '---file_1.txt
+'---{blue}dir_3{reset}
+    |---file_2.txt
+    |---{blue}dir_1{reset}
+    |---{blue}dir_2{reset}
+    |---file_3.txt
+    |---{blue}dir_3{reset}
+    '---file_1.txt
