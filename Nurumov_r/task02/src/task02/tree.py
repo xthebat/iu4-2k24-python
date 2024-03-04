@@ -1,81 +1,81 @@
 import os
 import sys
 
-directories_count = 0
-files_count = 0
-
 # Prefix components:
-space = '    '
-branch = '│   '
-tee = '├── '
-last = '└── '
+SPACE = '    '
+BRANCH = '│   '
+TEE = '├── '
+LAST = '└── '
 
 # Colors for console output
-white = '\033[0m'
-blue = '\033[94m'
-green = '\033[92m'
-red = '\033[31m'
+WHITE = '\033[0m'
+BLUE = '\033[94m'
+GREEN = '\033[92m'
+RED = '\033[31m'
 
 
-def tree(directory: str, max_depth: int = 0, depth: int = 0, indent: str = ''):
-    global directories_count, files_count
+def explore_directory(directory: str) -> list:
     directories = []
     files = []
-
-    if depth == 0:
-        print(f"{blue}{directory}")
-    elif depth > max_depth:
-        return
 
     try:
         items = os.listdir(directory)
     except PermissionError:
-        return
+        print(f"{RED} ERROR: Нет доступа к директории или поддиректории")
+        return [], []
 
-    for item in sorted(items):
+    for item in items:
         path = os.path.join(directory, item)
         if os.path.isdir(path):
-            directories_count += 1
             directories.append(item)
         else:
-            files_count += 1
             files.append(item)
 
-    for i, item in enumerate(directories):
-        path = os.path.join(directory, item)
-        if i == len(directories) - 1 and not files:
-            print(f"{white}{indent}{last}{blue}{item}")
-            tree(path, max_depth, depth + 1, f"{indent}{space}")
-        else:
-            print(f"{white}{indent}{tee}{blue}{item}")
-            tree(path, max_depth, depth + 1, f"{indent}{branch}")
+    return directories, files
 
-    for i, item in enumerate(files):
-        path = os.path.join(directory, item)
-        if i == len(files) - 1:
-            print(f"{white}{indent}{last}{green}{item}")
+
+def print_tree(directory: str, max_depth: int = 999, indent: str = '', depth: int = 0, is_root: bool = True) -> int:
+    if is_root:
+        print(f'{BLUE}{directory}')  # Выводим корневую директорию
+    directories, files = explore_directory(directory)
+    directories_count = 0
+    files_count = len(files)
+
+    for i, item in enumerate(directories + files):
+        is_last = i == len(directories + files) - 1
+        item_path = os.path.join(directory, item)
+        if os.path.isdir(item_path):
+            print(f'{WHITE}{indent}{(LAST if is_last else TEE)}{BLUE}{item}')
+            if os.path.isdir(item_path) and depth < max_depth:
+                sub_directories_count, sub_files_count = print_tree(
+                    item_path, max_depth, f'{indent}{(SPACE if is_last else BRANCH)}', depth + 1, False)
+                directories_count += sub_directories_count
+                files_count += sub_files_count
+            directories_count += 1
         else:
-            print(f"{white}{indent}{tee}{green}{item}")
+            print(f'{WHITE}{indent}{(LAST if is_last else TEE)}{GREEN}{item}')
 
     if depth == 0:
-        print(white, end='')
-        print(f"\nВсего {directories_count} директорий, {files_count} файлов")
+        print(f'{WHITE}', end='')
+        print(f'\nВсего {directories_count} директорий, {files_count} файлов')
+
+    return directories_count, files_count
 
 
 if __name__ == "__main__":
     if len(sys.argv) > 2:
-        my_path = sys.argv[2]
+        start_directory = sys.argv[2]
         try:
-            lvl = int(sys.argv[1]) - 1
-            if lvl < 0:
-                print(f"{red} ERROR: Уровень вложенности должен быть больше 0")
-            elif not os.path.isdir(my_path):
-                print(f"{red} ERROR: Нет такой директории")
+            max_depth = int(sys.argv[1]) - 1
+            if max_depth < 0:
+                print(f"{RED} ERROR: Уровень вложенности должен быть больше 0")
+            elif not os.path.isdir(start_directory):
+                print(f"{RED} ERROR: Нет такой директории")
             else:
-                tree(my_path, lvl)
+                print_tree(start_directory, max_depth)
         except:
             print(
-                f"{red} ERROR: Уровень вложенности должен быть целым не отрицательным числом и больше 0")
+                f"{RED} ERROR: Уровень вложенности должен быть целым не отрицательным числом и больше 0")
     else:
         print(
-            f"{red} ERROR: Необходимо ввести два аргумента: уровень вложенности и путь")
+            f"{RED} ERROR: Необходимо ввести два аргумента: уровень вложенности и путь")
