@@ -1,83 +1,64 @@
 import os
 
-# Symbols of tree in ASCII transformed to string
-down_right = chr(9568)
-down = chr(9553)
-right = chr(9562)
-flat = chr(9552)
+directories_count = 0
+files_count = 0
+
+# Prefix components:
+space = '    '
+branch = '│   '
+tee = '├── '
+last = '└── '
 
 # Colors for console output
-white = "\033[0m"
-blue = "\033[34m"
-green = "\033[32m"
+white = '\033[0m'
+blue = '\033[94m'
+green = '\033[92m'
 
 
-# Function to collect directories and files to a list
-def collect_tree(lvl: int, path: str) -> list:
-    elements = []
-    lvl -= 1
-    array = os.listdir(path)
-    for element in sorted(array):
-        if os.path.isdir(os.path.join(path, element)):
-            if lvl > 0:
-                elements.insert(0, collect_tree(
-                    lvl, os.path.join(path, element)))
-            elements.insert(0, f"{blue}{element}")
+def tree(directory: str, max_depth: int = 0, depth: int = 0, indent: str = ''):
+    global directories_count, files_count
+    directories = []
+    files = []
 
+    if depth == 0:
+        print(f"{blue}{directory}")
+    elif depth > max_depth:
+        return
+
+    try:
+        items = os.listdir(directory)
+    except PermissionError:
+        return
+
+    for item in sorted(items):
+        path = os.path.join(directory, item)
+        if os.path.isdir(path):
+            directories_count += 1
+            directories.append(item)
         else:
-            elements.append(f"{green}{element}")
+            files_count += 1
+            files.append(item)
 
-    return elements
-
-
-# Function to print and count directories and files
-def tree(arrays: list, lvl: int) -> int:
-    dirs, files = 0, 0
-
-    for element in arrays:
-        if isinstance(element, list):
-            count = tree(element, lvl + 1)
-            dirs += count[0]
-            files += count[1]
-
+    for i, item in enumerate(directories):
+        path = os.path.join(directory, item)
+        if i == len(directories) - 1 and not files:
+            print(f"{white}{indent}{last}{blue}{item}")
+            tree(path, max_depth, depth + 1, f"{indent}{space}")
         else:
-            if lvl > 0:
-                print(f"{white}{down}", end='')
-                for i in range(lvl):
-                    print("   ", end='')
-                    if i == lvl-1:
-                        if element == arrays[-1]:
-                            print(f"{white}{right}", end='')
-                        else:
-                            print(f"{white}{down_right}", end='')
-                    else:
-                        print(f"{white}{down}", end='')
-            else:
-                if element == arrays[-1]:
-                    print(f"{white}{right}", end='')
-                else:
-                    print(f"{white}{down_right}", end='')
+            print(f"{white}{indent}{tee}{blue}{item}")
+            tree(path, max_depth, depth + 1, f"{indent}{branch}")
 
-            if "{blue}" in element:
-                dirs += 1
-            else:
-                files += 1
-            for i in range(2):
-                print(f"{white}{flat}", end='')
-            print(f" {element}")
+    for i, item in enumerate(files):
+        path = os.path.join(directory, item)
+        if i == len(files) - 1:
+            print(f"{white}{indent}{last}{green}{item}")
+        else:
+            print(f"{white}{indent}{tee}{green}{item}")
 
-    return dirs, files
-
-
-def main(lvl: int, path: str):
-    collection = collect_tree(lvl, path)
-
-    print(f"{blue}{path}")
-    count = tree(collection, 0)
-
-    count_str = f"\n{count[0]} directories, {count[1]} files"
-    print(f"{white}{count_str}")
+    if depth == 0:
+        print(white, end='')
+        print(f"\nВсего {directories_count} директорий, {files_count} файлов")
 
 
 if __name__ == "__main__":
-    main(3, "./Nurumov_r")
+    tree("./", 4)
