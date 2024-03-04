@@ -1,4 +1,5 @@
 import os
+import sys
 
 directories_count = 0
 files_count = 0
@@ -13,6 +14,7 @@ last = '└── '
 white = '\033[0m'
 blue = '\033[94m'
 green = '\033[92m'
+red = '\033[31m'
 
 
 def tree(directory: str, max_depth: int = 0, depth: int = 0, indent: str = ''):
@@ -61,4 +63,19 @@ def tree(directory: str, max_depth: int = 0, depth: int = 0, indent: str = ''):
 
 
 if __name__ == "__main__":
-    tree("./", 4)
+    if len(sys.argv) > 2:
+        my_path = sys.argv[2]
+        try:
+            lvl = int(sys.argv[1]) - 1
+            if lvl < 0:
+                print(f"{red} ERROR: Уровень вложенности должен быть больше 0")
+            elif not os.path.isdir(my_path):
+                print(f"{red} ERROR: Нет такой директории")
+            else:
+                tree(my_path, lvl)
+        except:
+            print(
+                f"{red} ERROR: Уровень вложенности должен быть целым не отрицательным числом и больше 0")
+    else:
+        print(
+            f"{red} ERROR: Необходимо ввести два аргумента: уровень вложенности и путь")
