@@ -2,7 +2,9 @@ import pytest
 import sys, os
 from colorama import Fore
 
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'src'))
+test_dir = os.path.dirname(__file__)
+sys.path.append(os.path.join(test_dir, '..', 'src'))
+
 from tree import Tree
 
 @pytest.fixture
@@ -26,19 +28,19 @@ def create_filesystem(tmp_path):
     return tmp_path
 
 
-def read_test_suite(suite_path : str) -> str:
-    with open(suite_path, "r") as f:
+def read_test_suite(suite : str) -> str:
+    with open(os.path.join(test_dir, "suites", suite), "r") as f:
         f_str = f.read()
 
     return f_str
 
 
-def cmp_expected_and_real(suite_path : str, capsys, create_filesystem) ->None:
+def cmp_expected_and_real(suite : str, capsys, create_filesystem) ->None:
     tree = Tree()
     tree.print()
 
-    captured = capsys.readouterr() # Захват stdout и stderr в строку
-    expected_str = read_test_suite(suite_path)
+    captured = capsys.readouterr()
+    expected_str = read_test_suite(suite)
     expected_str = expected_str.format(head_dir=create_filesystem, blue=Fore.BLUE, reset=Fore.RESET)
     
     assert captured.out == expected_str
@@ -46,18 +48,18 @@ def cmp_expected_and_real(suite_path : str, capsys, create_filesystem) ->None:
 
 def test_tree(create_filesystem, monkeypatch, capsys):
     monkeypatch.setattr("sys.argv", ["", f"{create_filesystem}"])
-    cmp_expected_and_real("suites/test_tree.txt", capsys, create_filesystem)    
+    cmp_expected_and_real("test_tree.txt", capsys, create_filesystem)    
 
 
 def test_tree_asc(create_filesystem, monkeypatch, capsys):
     monkeypatch.setattr("sys.argv", ["", f"{create_filesystem}", "-s", "asc"])
-    cmp_expected_and_real("suites/test_tree_asc.txt", capsys, create_filesystem)
+    cmp_expected_and_real("test_tree_asc.txt", capsys, create_filesystem)
 
 
 def test_tree_desc(create_filesystem, monkeypatch, capsys):
     monkeypatch.setattr("sys.argv", ["", f"{create_filesystem}", "-s", "desc"])
-    cmp_expected_and_real("suites/test_tree_desc.txt", capsys, create_filesystem)
+    cmp_expected_and_real("test_tree_desc.txt", capsys, create_filesystem)
 
 def test_tree_depth(create_filesystem, monkeypatch, capsys):
     monkeypatch.setattr("sys.argv", ["", f"{create_filesystem}", "-d", "2"])
-    cmp_expected_and_real("suites/test_tree_depth.txt", capsys, create_filesystem)
+    cmp_expected_and_real("test_tree_depth.txt", capsys, create_filesystem)
