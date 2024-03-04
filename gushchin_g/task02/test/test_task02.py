@@ -3,7 +3,7 @@ import pytest
 from typing import List
 
 from src.task02.task02 import (
-    generate_intedation,
+    generate_indentation,
     generate_union_list,
     get_path,
     get_reqursion_number,
@@ -14,16 +14,16 @@ from src.task02.task02 import (
 @pytest.mark.parametrize(
     "lines,expected",
     [
-        [[], "|-- "],
-        [[True, True, False, True], "|   |       |   |-- "],
-        [[False, True, False, True, True], "    |       |   |   |-- "],
-        [[True, True, True, True], "|   |   |   |   |-- "],
-        [[False], "    |-- "],
-        [[False, False, False, False], "                |-- "],
+        [[], ""],
+        [[True, True, False, True], "│   │       │   "],
+        [[False, True, False, True, True], "    │       │   │   "],
+        [[True, True, True, True], "│   │   │   │   "],
+        [[False], "    "],
+        [[False, False, False, False], "                "],
     ],
 )
-def test_generate_intedation(lines: List[bool], expected: str):
-    assert generate_intedation(lines) == expected
+def test_generate_indentation(lines: List[bool], expected: str):
+    assert generate_indentation(lines) == expected
 
 
 @pytest.mark.parametrize(

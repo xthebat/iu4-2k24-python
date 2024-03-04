@@ -1,37 +1,45 @@
+import os
 import sys
+
+from enum import Enum
 from typing import List
-from os import walk
-
-PATH_ARGUMNET_ID = 2
-REQURSION_ARGUMENT_ID = 1
-
-STYLE_RESSET = "\033[0m"
-STYLE_COLOR_BLUE = "\033[34m"
-
-INTEDATION_EMPTY = "    "
-INTEDATION_VERTICAL = "|   "
-INTEDATION_END = "|-- "
-
-PATH_ID = 0
-TYPE_ID = 1
 
 
-def generate_intedation(lines: List[bool]) -> str:
-    answer: str = ""
-    append: str = ""
+class ArgumentsIDs(Enum):
+    PATH = 2
+    RECURSION = 1
+
+
+class FSElementsListIDs(Enum):
+    PATH = 0
+    TYPE = 1
+
+
+class PathsTypes(Enum):
+    FILE = 0
+    DIRRECTORY = 1
+
+
+class TerminalStyles(Enum):
+    BLUE = "\033[34m"
+    GREEN = "\033[32m"
+    RESSET = "\033[0m"
+
+
+class Indentations(Enum):
+    EMPTY = "    "
+    END = "└── "
+    INTERVAL = "├── "
+    VERTICAL = "│   "
+
+
+def generate_indentation(lines: List[bool]) -> str:
+    result: str = ""
 
     for element in lines:
-        if element is False:
-            append = INTEDATION_EMPTY
-        else:
-            append = INTEDATION_VERTICAL
+        result = f"{result}{Indentations.VERTICAL.value if element else Indentations.EMPTY.value}"
 
-        answer = f"{answer}{append}"
-
-    append = INTEDATION_END
-    answer = f"{answer}{append}"
-
-    return answer
+    return result
 
 
 def generate_union_list(
@@ -40,75 +48,101 @@ def generate_union_list(
     result_list: List[List] = []  # List[[str, bool]]
 
     for dirname in dirnames:
-        result_list.append([dirname, True])
+        result_list.append([dirname, PathsTypes.DIRRECTORY.value])
     for filename in filenames:
-        result_list.append([filename, False])
+        result_list.append([filename, PathsTypes.FILE.value])
 
-    result_list.sort(key=lambda arr: arr[PATH_ID], reverse=False)  # by name
+    result_list.sort(
+        key=lambda arr: arr[FSElementsListIDs.PATH.value], reverse=False
+    )  # by name
 
     return result_list
 
 
 def get_path(arguments: List[str]) -> str:
     try:
-        return arguments[PATH_ARGUMNET_ID]
+        return arguments[ArgumentsIDs.PATH.value]
     except Exception:
         return ""
 
 
 def get_reqursion_number(arguments: List[str]) -> int:
     try:
-        answer = int(arguments[REQURSION_ARGUMENT_ID])
-        if answer < 0:
+        result = int(arguments[ArgumentsIDs.RECURSION.value])
+        if result < 0:
             return 0
-        return answer
+        return result
     except Exception:
         return 0
 
 
-def scan_dirrectory(scan_dir_path: str, curr_req: int, lines: List[bool]):
-    indentation = generate_intedation(lines)
+def scan_dirrectory(scan_dir_path: str, curr_req: int, lines: List[bool]) -> str:
+    result: str = ""
+
+    indentation = generate_indentation(lines)
 
     union_list: List[List] = []  # List[[str, bool]]
 
-    for dirpaths, dirnames, filenames in walk(scan_dir_path):
+    for dirpaths, dirnames, filenames in os.walk(scan_dir_path):
         union_list = generate_union_list(dirnames=dirnames, filenames=filenames)
         dirs_count = len(dirnames)
         break
 
-    dir_iter: int = 0
+    dirrectory_iterator: int = 0
+    element_iterator: int = 0
     for element in union_list:
-        name: str = element[PATH_ID]
-        if element[TYPE_ID] is True:
-            name = set_style(element[PATH_ID], STYLE_COLOR_BLUE)
-            dir_iter += 1
-        print(f"{indentation}{name}")
+        element_iterator += 1
+
+        name: str = element[FSElementsListIDs.PATH.value]
+        name = set_style(
+            element[FSElementsListIDs.PATH.value],
+            TerminalStyles.BLUE.value
+            if element[FSElementsListIDs.TYPE.value] == PathsTypes.DIRRECTORY.value
+            else TerminalStyles.GREEN.value,
+        )
+
+        if element[FSElementsListIDs.TYPE.value] == PathsTypes.DIRRECTORY.value:
+            dirrectory_iterator += 1
+
+        complete_indentation: str = (
+            f"{indentation}{Indentations.END.value}"
+            if element_iterator == len(union_list)
+            else f"{indentation}{Indentations.INTERVAL.value}"
+        )
+
+        result = f"{result}{complete_indentation}{name}\n\r"
 
         if curr_req > 1:
-            if dir_iter >= dirs_count:
-                lines.append(False)
-            else:
-                lines.append(True)
+            lines.append(dirrectory_iterator < dirs_count)
 
-            scan_dirrectory(f"{scan_dir_path}/{element[PATH_ID]}", curr_req - 1, lines)
+            subdirrectory_scan_result: str = scan_dirrectory(
+                f"{scan_dir_path}/{element[FSElementsListIDs.PATH.value]}",
+                curr_req - 1,
+                lines,
+            )
+            result = f"{result}{subdirrectory_scan_result}"
+
             lines.pop()
+
+    return result
 
 
 def set_style(input: str, style: str) -> str:
-    return f"{style}{input}{STYLE_RESSET}"
+    return f"{style}{input}{TerminalStyles.RESSET.value}"
 
 
 def main():
     check_path: str = get_path(sys.argv)
     reqursion: int = get_reqursion_number(sys.argv)
 
-    if reqursion <= 0:
+    if reqursion == 0:
+        print("ERROR::List of arguments is wrong.")
         exit()
 
     lines: List[bool] = []
 
     print(check_path)
-    scan_dirrectory(check_path, reqursion, lines)
+    print(scan_dirrectory(check_path, reqursion, lines), end="")
 
 
 if __name__ == "__main__":
