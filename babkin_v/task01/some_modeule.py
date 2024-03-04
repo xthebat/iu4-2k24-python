@@ -1,1 +1,0 @@
-print(f'This module: {__name__}')

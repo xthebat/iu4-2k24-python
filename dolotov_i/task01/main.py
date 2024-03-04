@@ -1,7 +1,7 @@
-import hello as hi
+import lib.hello as hi
 
 def main():
-    hi.hello_world()
+    hi.hello()
 
 if __name__ == "__main__":
     main()
