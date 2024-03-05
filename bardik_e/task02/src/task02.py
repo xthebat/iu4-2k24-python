@@ -1,5 +1,7 @@
 import argparse
 import os
+import sys
+
 from task02 import tree
 
 if __name__ == "__main__":
@@ -14,4 +16,4 @@ if __name__ == "__main__":
 	if not os.path.isdir(path):
 		parser.error("provided string is not a valid path")
 
-	tree.run(path, int(args.depth[0] if isinstance(args.depth, list) else args.depth))
+	tree.run(path, int(args.depth[0] if isinstance(args.depth, list) else args.depth), sys.stdout)
