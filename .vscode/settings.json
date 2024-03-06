@@ -1,0 +1,7 @@
+{
+    "python.testing.pytestArgs": [
+        "sterlikov_m"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true
+}
