@@ -42,7 +42,6 @@ def create_tree(directory: str, level: int) -> list:
         if os.path.isdir(path):
             item = create_tree(path, level - 1)
         tree_lst.append(item)
-
     return tree_lst
 
 
