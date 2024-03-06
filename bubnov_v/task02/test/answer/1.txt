@@ -3,3 +3,5 @@ dir_1
 ├─── hello
 ├─── request
 └─── world
+
+3 directories, 2 files

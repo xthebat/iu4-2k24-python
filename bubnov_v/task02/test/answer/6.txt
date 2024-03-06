@@ -10,3 +10,5 @@ dir_3
                ├─── HELLO
                ├─── newest.txt
                └─── start.py
+
+5 directories, 7 files

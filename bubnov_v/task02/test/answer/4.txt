@@ -5,3 +5,5 @@ dir_2
 ├─── structure.py
 ├─── test_main.py
 └─── test_tree
+
+2 directories, 5 files

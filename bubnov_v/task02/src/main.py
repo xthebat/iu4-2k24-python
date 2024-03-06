@@ -1,5 +1,5 @@
 import argparse
-from tree import create_tree, output_tree
+from tree import create_tree, output_tree, total_number_element
 
 
 # Creating a parser for incoming arguments and options
@@ -11,9 +11,10 @@ def main():
     parser.add_argument('directory', type=str, default='.',
                         help='Directory from which tree start (default: current directory)')
     args = parser.parse_args()
+
     # Start function "tree"
     if args.function == 'tree':
-        output_tree(create_tree(args.directory, args.L), args.directory, decorate='')
+        total_number_element(output_tree(create_tree(args.directory, args.L), args.directory, True))
     else:
         print('Use -h to get information about available arguments and options')
 

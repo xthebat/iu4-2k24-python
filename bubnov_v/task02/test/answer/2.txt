@@ -6,3 +6,5 @@ dir_1
 ├─── request
 │    └─── ask.py
 └─── world
+
+3 directories, 5 files
