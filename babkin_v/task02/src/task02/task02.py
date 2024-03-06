@@ -1,12 +1,13 @@
 import os
 import argparse
+
 from colorama import Fore, Style
 from pathlib import Path
 
 CROWBAR = '└──'
 T_LEFT = '├──'
 LINE = '│    '
-BLANK = '    '
+BLANK = '     '
 
 directories_count = 0
 files_count = 0
@@ -15,35 +16,36 @@ files_count = 0
 def generate_tree(path: Path, depth=1, prefix="") -> str:
     result = ""
     items_list = os.listdir(path)
+    items_list.sort()
     for item in items_list:
         is_last = True if item == items_list[-1] else False
         item_path = os.path.join(path, item)
-        result = f"{result}{prefix}{generate_string(item_path, is_last, item)}\n\r"
+        is_dir = True if os.path.isdir(item_path) else False
+        name_with_color = generate_string(is_dir, is_last, item)
+        result = f"{result}{prefix}{name_with_color}\n\r"
         if depth > 1:
             if os.path.isdir(item_path):
-                addon = generate_tree(item_path, depth - 1, f"{prefix}{BLANK if is_last else LINE}")
+                extender = f"{prefix}{BLANK if is_last else LINE}"
+                addon = generate_tree(item_path, depth - 1, extender)
                 result = f"{result}{addon}"
     return result
 
 
-def generate_string(item_path: Path, is_last: bool, name: str):
-    if os.path.isdir(item_path):
+def generate_string(is_dir, is_last: bool, name: str):
+    if is_dir:
         style = Fore.BLUE
         global directories_count
         directories_count += 1
-    elif os.path.islink(item_path):
-        style = Fore.CYAN
-    elif os.path.isfile(item_path):
+    else:
         style = Fore.GREEN
         global files_count
         files_count += 1
-    else:
-        style = Fore.RED
+
     string = f"{CROWBAR if is_last else T_LEFT} {style}{name}{Style.RESET_ALL}"
     return string
 
 
-def range_type(astr: str, min=1, max=20) -> int:
+def range_type(astr: str, min=1, max=30) -> int:
     value = int(astr)
     if min <= value <= max:
         return value
@@ -56,6 +58,13 @@ def dir_type(path: str):
         return path
     else:
         raise argparse.ArgumentTypeError(f"path ({path}) is not a directory")
+
+
+def main():
+    print(f"{Fore.BLUE}{os.path.abspath(args.path)}{Style.RESET_ALL}")
+    print(generate_tree(args.path, args.level).rstrip())
+    print(f"directories_count: {directories_count}")
+    print(f"files_count: {files_count}")
 
 
 if __name__ == '__main__':
@@ -74,10 +83,4 @@ if __name__ == '__main__':
                         # , type=dir_type
                         )
     args = parser.parse_args()
-
-    print(f"level: {args.level}")
-    print(f"path: {args.path}")
-    print(f"{Fore.BLUE}{args.path}{Style.RESET_ALL}")
-    print(generate_tree(args.path, args.level).rstrip())
-    print(f"directories_count: {directories_count}")
-    print(f"files_count: {files_count}")
+    main()
