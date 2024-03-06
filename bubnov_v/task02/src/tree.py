@@ -8,13 +8,16 @@ LAST = "└─── "
 
 
 # Colors the element when output, depending on its type
-def decoration(element: str, directory: str) -> None:
-    if os.path.isdir(directory):
-        print(Fore.BLUE + element + Style.RESET_ALL)
-    elif os.path.isfile(directory):
-        print(Fore.GREEN + element + Style.RESET_ALL)
-    elif os.path.islink(directory):
-        print(Fore.LIGHTCYAN_EX + element + Style.RESET_ALL)
+def decoration(element: str, directory: str, decorate: str) -> None:
+    if not decorate:
+        if os.path.isdir(directory):
+            print(Fore.BLUE + element + Style.RESET_ALL)
+        elif os.path.isfile(directory):
+            print(Fore.GREEN + element + Style.RESET_ALL)
+        elif os.path.islink(directory):
+            print(Fore.LIGHTCYAN_EX + element + Style.RESET_ALL)
+        else:
+            print(element)
     else:
         print(element)
 
@@ -44,11 +47,11 @@ def create_tree(directory: str, level: int) -> list:
 
 
 # Displaying a list of directories and files in the "tree" format
-def output_tree(tree: list, directory: str, prefix='') -> None:
+def output_tree(tree: list, directory: str, prefix='', decorate='') -> None:
     if len(tree) == 0:
         return
     element = tree.pop(0)
-    decoration(element, directory)
+    decoration(element, directory, decorate)
     # Display prefix
     for i, item in enumerate(tree):
         if i == len(tree) - 1:
@@ -60,7 +63,7 @@ def output_tree(tree: list, directory: str, prefix='') -> None:
         # Go down into the depths and output structure
         if type(item) is list:
             path = os.path.join(directory, item[0])
-            output_tree(item, path, prefix + prefix_add)
+            output_tree(item, path, prefix + prefix_add, decorate)
         else:
             path = os.path.join(directory, item)
-            decoration(item, path)
+            decoration(item, path, decorate)

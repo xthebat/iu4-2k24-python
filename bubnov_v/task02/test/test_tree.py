@@ -28,7 +28,7 @@ def test_output_tree(dir_name: str, level: int, file_answer: str, structure: lis
     with open('file_output.txt', 'w', encoding='utf-8') as file:
         sys.stdout = file
         path = os.path.join(dir_path, dir_name)
-        output_tree(create_tree(path, level), path)
+        output_tree(create_tree(path, level), path, decorate='y')
     sys.stdout = stdout
     # Compare created file of tree with answer
     with open('file_output.txt', 'rb') as file_output, open(f'answer\\{file_answer}', 'rb') as answer:

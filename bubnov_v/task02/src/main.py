@@ -13,7 +13,7 @@ def main():
     args = parser.parse_args()
     # Start function "tree"
     if args.function == 'tree':
-        output_tree(create_tree(args.directory, args.L), args.directory)
+        output_tree(create_tree(args.directory, args.L), args.directory, decorate='')
     else:
         print('Use -h to get information about available arguments and options')
 
