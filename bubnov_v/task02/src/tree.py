@@ -23,7 +23,7 @@ def decoration(element: str, directory: str, decorate: str) -> None:
 
 
 # Creates a list of directories and files in them
-def create_tree(directory: str, level: int) -> list:
+def create_tree(directory: str, level: int) -> list[str]:
     tree_lst = [os.path.basename(directory)]
     if level == 0:
         return tree_lst[0]
