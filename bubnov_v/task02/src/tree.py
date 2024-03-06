@@ -29,7 +29,7 @@ def create_tree(directory: str, level: int) -> list:
         return tree_lst[0]
     # Handler of errors
     try:
-        directory_content = os.listdir(directory)
+        os.listdir(directory)
     except PermissionError:
         print(f"{Fore.RED}PERMISSION DENIED {directory}{Style.RESET_ALL}")
         return tree_lst[0]
@@ -37,7 +37,7 @@ def create_tree(directory: str, level: int) -> list:
         print(f"{Fore.RED}DIRECTORY NOT FOUND {directory}{Style.RESET_ALL}")
         return []
     # Deepening into the depths of directories
-    for item in directory_content:
+    for item in os.listdir(directory):
         path = os.path.join(directory, item)
         if os.path.isdir(path):
             item = create_tree(path, level - 1)
