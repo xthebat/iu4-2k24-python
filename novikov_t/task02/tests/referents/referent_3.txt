@@ -1,0 +1,2 @@
+test_directory
+└── file3.txt
