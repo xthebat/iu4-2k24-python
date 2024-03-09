@@ -13,3 +13,5 @@
 │       └───{green}file_2_3_1{color_end}
 └───{blue}dir_3{color_end}
     └───{green}file_3{color_end}
+
+10 directories, 5 files, 0 links
