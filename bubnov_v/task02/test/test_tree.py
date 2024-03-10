@@ -24,7 +24,6 @@ def test_total_number_element(dir_name: str, level: int, file_answer: str, struc
     dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'test_tree')
     create_structure(dir_path, structure)
 
-    # Redirect console output in file
     stdout = sys.stdout
     with open('file_output.txt', 'w', encoding='utf-8') as file:
         sys.stdout = file
@@ -32,10 +31,8 @@ def test_total_number_element(dir_name: str, level: int, file_answer: str, struc
         total_number_element(output_tree(create_tree(path, level), path, False))
     sys.stdout = stdout
 
-    # Compare created file output with answer
     with open('file_output.txt', 'rb') as file_output, open(os.path.join('answer', file_answer), 'rb') as answer:
         assert file_output.read() == answer.read()
 
-    # Remove all files and directories, that were created
     os.remove(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'file_output.txt'))
     remove_structure(dir_path, structure[0])
