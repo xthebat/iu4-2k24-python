@@ -1,81 +1,63 @@
 import os
-import sys
+import argparse
+from colorama import init, Fore
 
-# Prefix components:
-SPACE = '    '
-BRANCH = '│   '
-TEE = '├── '
-LAST = '└── '
-
-# Colors for console output
-WHITE = '\033[0m'
-BLUE = '\033[94m'
-GREEN = '\033[92m'
-RED = '\033[31m'
+BRANCH_END = "└── "
+BRANCH_LEFT = "│   "
+BRANCH_RIGHT = "├── "
+BRANCH_SPACE = "    "
 
 
-def explore_directory(directory: str) -> list:
-    directories = []
-    files = []
+def explore_directory(directory: str, max_depth: int, depth: int = 1):
+    tree = []
+    directories_count, files_count = 0, 0
 
-    try:
-        items = os.listdir(directory)
-    except PermissionError:
-        print(f"{RED} ERROR: Нет доступа к директории или поддиректории")
-        return [], []
+    tree.append((os.path.basename(os.path.abspath(directory))))
+    if depth > max_depth:
+        return tree, directories_count, files_count
 
-    for item in items:
-        path = os.path.join(directory, item)
-        if os.path.isdir(path):
-            directories.append(item)
-        else:
-            files.append(item)
-
-    return directories, files
-
-
-def print_tree(directory: str, max_depth: int = 999, indent: str = '', depth: int = 0, is_root: bool = True) -> int:
-    if is_root:
-        print(f'{BLUE}{directory}')  # Выводим корневую директорию
-    directories, files = explore_directory(directory)
-    directories_count = 0
-    files_count = len(files)
-
-    for i, item in enumerate(directories + files):
-        is_last = i == len(directories + files) - 1
+    list_of_items = os.listdir(directory)
+    for item in list_of_items:
         item_path = os.path.join(directory, item)
         if os.path.isdir(item_path):
-            print(f'{WHITE}{indent}{(LAST if is_last else TEE)}{BLUE}{item}')
-            if os.path.isdir(item_path) and depth < max_depth:
-                sub_directories_count, sub_files_count = print_tree(
-                    item_path, max_depth, f'{indent}{(SPACE if is_last else BRANCH)}', depth + 1, False)
-                directories_count += sub_directories_count
-                files_count += sub_files_count
-            directories_count += 1
+            item, sub_directories_count, sub_files_count = explore_directory(
+                item_path, max_depth, depth + 1)
+            directories_count += sub_directories_count + 1
+            files_count += sub_files_count
+            tree.insert(1, item)
         else:
-            print(f'{WHITE}{indent}{(LAST if is_last else TEE)}{GREEN}{item}')
+            files_count += 1
+            tree.append(item)
+    return tree, directories_count, files_count
 
-    if depth == 0:
-        print(f'{WHITE}', end='')
-        print(f'\nВсего {directories_count} директорий, {files_count} файлов')
 
-    return directories_count, files_count
+def print_tree(tree: list, decor_prefix: str = ""):
+    print(f"{Fore.BLUE}{tree.pop(0)}")
+    for index, item in enumerate(tree, 1):
+        if index == len(tree):
+            print(f"{Fore.WHITE}{decor_prefix}{BRANCH_END}", end='')
+            decor_plus = BRANCH_SPACE
+        else:
+            print(f"{Fore.WHITE}{decor_prefix}{BRANCH_RIGHT}", end='')
+            decor_plus = BRANCH_LEFT
+
+        if isinstance(item, list) and len(item) == 1:
+            print(f"{Fore.BLUE}{item[0]}")
+        elif isinstance(item, list):
+            print_tree(item, decor_prefix + decor_plus)
+        else:
+            print(f"{Fore.GREEN}{item}")
 
 
 if __name__ == "__main__":
-    if len(sys.argv) > 2:
-        start_directory = sys.argv[2]
-        try:
-            max_depth = int(sys.argv[1]) - 1
-            if max_depth < 0:
-                print(f"{RED} ERROR: Уровень вложенности должен быть больше 0")
-            elif not os.path.isdir(start_directory):
-                print(f"{RED} ERROR: Нет такой директории")
-            else:
-                print_tree(start_directory, max_depth)
-        except:
-            print(
-                f"{RED} ERROR: Уровень вложенности должен быть целым не отрицательным числом и больше 0")
-    else:
-        print(
-            f"{RED} ERROR: Необходимо ввести два аргумента: уровень вложенности и путь")
+    parser = argparse.ArgumentParser(
+        description="displays the directory structure as a tree with a specified depth")
+    parser.add_argument("-L", "--depth", type=int, default=1,
+                        help="Depth (nesting level) to display")
+    parser.add_argument("directory", type=str, help="Path to the directory")
+
+    args = parser.parse_args()
+    tree, directories_count, files_count = explore_directory(args.directory, args.depth)
+    init()
+    print_tree(tree)
+    print(f"\n{Fore.WHITE}Found {directories_count} directories and {files_count} files")
