@@ -1,9 +1,9 @@
 from flags import args
-from tree import tree
+from tree import print_tree
 
 
 def main():
-    tree(args.dir, args.nest)
+    print_tree(args.dir, args.nest)
 
 
 if __name__ == '__main__':
