@@ -1,15 +1,11 @@
-import z1
+import magic
 
-z1
+magic
 
 
 def main():
-    pass
+    print("moments")
 
 
 if __name__ == "__main__":
-    a = 10
-    b = 20
-    c = 30
-    print(f"c = a + b = {c}")
     main()
