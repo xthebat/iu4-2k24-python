@@ -3,8 +3,7 @@ import shutil
 import subprocess
 import tempfile
 import pytest
-
-from tree import generate_tree, print_tree
+from task02.tree import generate_tree
 
 class TestDirectoryTreeGenerator:
     @pytest.fixture
@@ -18,7 +17,7 @@ class TestDirectoryTreeGenerator:
         return temp_dir
 
     def test_directory_tree_generation(self, temp_dir):
-        script_file = "tree.py"
+        script_file = "../src/tree.py"
 
         test_structure = {
             "root": {
