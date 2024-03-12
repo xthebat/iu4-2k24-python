@@ -1,6 +1,6 @@
 import magic
 
-magic
+print(magic)
 
 
 def main():
