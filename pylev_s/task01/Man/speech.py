@@ -1,2 +1,2 @@
 def talk():
-    print(f"talk - {__name__}")
+    print(f"speak - {__name__}")

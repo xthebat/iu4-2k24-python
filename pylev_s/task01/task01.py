@@ -4,9 +4,8 @@ from Man.speech import talk
 print(idk)
 
 def main():
-    print("Hello")
+    print("Hello World!")
     talk()
-
 
 print(f"__name__ = {__name__}")
 
