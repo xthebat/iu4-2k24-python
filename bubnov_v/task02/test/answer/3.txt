@@ -1,0 +1,9 @@
+dir_2
+├─── KO
+├─── NOBODY
+├─── OK
+├─── structure.py
+├─── test_main.py
+└─── test_tree
+
+2 directories, 5 files
