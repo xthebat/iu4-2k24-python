@@ -1,0 +1,5 @@
+[34mtest_directory
+[37m├── [34mtest_directory
+[37m│   └── [32mfile3.txt
+[37m├── [32mfile2.txt
+[37m└── [32mfile1.txt
