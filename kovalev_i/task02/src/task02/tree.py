@@ -12,7 +12,7 @@ BRANCH_END = Fore.BLUE + " └── "
 
 def get_tree(path: str, depth: int, level_tree: int) -> list:
     tree: list = []
-    essences = sorted(os.listdir(path))
+    essences = os.listdir(path)
 
     for essence in essences:
         if essence.startswith('.'):
@@ -65,17 +65,17 @@ def print_tree(path: str, tree: list, prefix: str, calculation: list) -> None:
                 print(prefix + BRANCH_END + Fore.LIGHTWHITE_EX + tree[counter]) if flag_end else print(
                     prefix + CROSS + Fore.LIGHTWHITE_EX + tree[counter])
             elif tree[counter].endswith((".docx", ".DOCX", ".doc")):
-                print(prefix + BRANCH_END + Fore.LIGHTBLUE_EX + Back.LIGHTWHITE_EX + tree[
+                print(prefix + BRANCH_END + Fore.LIGHTWHITE_EX + Back.LIGHTBLUE_EX + tree[
                     counter]) if flag_end else print(
-                    prefix + CROSS + Fore.LIGHTBLUE_EX + Back.LIGHTWHITE_EX + tree[counter])
+                    prefix + CROSS + Fore.LIGHTWHITE_EX + Back.LIGHTBLUE_EX + tree[counter])
             elif tree[counter].endswith("pdf"):
-                print(prefix + BRANCH_END + Fore.LIGHTWHITE_EX + Back.LIGHTWHITE_EX + tree[
+                print(prefix + BRANCH_END + Fore.LIGHTWHITE_EX + Back.LIGHTRED_EX + tree[
                     counter]) if flag_end else print(
-                    prefix + CROSS + Fore.LIGHTRED_EX + Back.LIGHTWHITE_EX + tree[counter])
+                    prefix + CROSS + Fore.LIGHTWHITE_EX + Back.LIGHTRED_EX + tree[counter])
             elif tree[counter].endswith("xlsx"):
-                print(prefix + BRANCH_END + Fore.LIGHTGREEN_EX + Back.LIGHTWHITE_EX + tree[
+                print(prefix + BRANCH_END + Fore.LIGHTWHITE_EX + Back.LIGHTGREEN_EX + tree[
                     counter]) if flag_end else print(
-                    prefix + CROSS + Fore.LIGHTGREEN_EX + Back.LIGHTWHITE_EX + tree[counter])
+                    prefix + CROSS + Fore.LIGHTWHITE_EX + Back.LIGHTGREEN_EX + tree[counter])
             elif tree[counter].endswith(".py"):
                 print(prefix + BRANCH_END + Fore.CYAN + tree[counter]) if flag_end else print(
                     prefix + CROSS + Fore.CYAN + tree[counter])
