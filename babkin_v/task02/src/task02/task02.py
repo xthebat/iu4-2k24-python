@@ -74,7 +74,6 @@ def main():
     print(generate_tree(args.path, counter,  args.level))
     print(f"directories: {counter['directories']}")
     print(f"files: {counter['files']}")
-   #print(f"files_count: {counter.files}")
 
 
 if __name__ == '__main__':
