@@ -1,10 +1,11 @@
+import argparse
+
 import pytest
 from colorama import Fore, Style
-import argparse
+
 from task02.task02 import (
     generate_string,
     range_type,
-    dir_type,
 )
 
 CROWBAR = '└──'
