@@ -6,18 +6,19 @@ import sys
 import argparse
 from enum import Enum
 
+
 class TreeSymbols(Enum):
     """Class with symbols for tree printing"""
-    SPACE     = '    '
-    BRANCH    = '│   '
-    T         = '├── '
-    LAST      = '└── '
+    SPACE = '    '
+    BRANCH = '│   '
+    T = '├── '
+    LAST = '└── '
 
 
-def tree(path_name: Path, level: int, lvl_mod: bool, result: list=[], prefix: str='') -> list:
+def tree_list_create(path_name: Path, level: int, lvl_mod: bool, result: list = [], prefix: str = '') -> list:
     """
-    Dirs searching and create list
-    
+    Create list with directory tree
+
     path_name: path where tree must start
     level: current or max level of depth
     lvl_mod: lvl set by user or not
@@ -25,7 +26,8 @@ def tree(path_name: Path, level: int, lvl_mod: bool, result: list=[], prefix: st
     prefix: symbol prefix for recursion (in main call should be empty)
     """
     path_list = list(path_name.iterdir())
-    symbols = [TreeSymbols.T.value] * (len(path_list) - 1) + [TreeSymbols.LAST.value]
+    symbols = [TreeSymbols.T.value] * \
+        (len(path_list) - 1) + [TreeSymbols.LAST.value]
 
     for symbol, path in zip(symbols, path_list):
         if level == 0 and lvl_mod is True:
@@ -41,44 +43,41 @@ def tree(path_name: Path, level: int, lvl_mod: bool, result: list=[], prefix: st
 
             current_level_nxt -= 1
 
-            if symbol == TreeSymbols.T.value :
-                extension_symbol = TreeSymbols.BRANCH.value 
-            else :
-                extension_symbol = TreeSymbols.SPACE.value
+            extension_symbol = TreeSymbols.BRANCH.value if symbol == TreeSymbols.T.value else TreeSymbols.SPACE.value
 
-            tree(path, level=current_level_nxt, prefix=prefix+extension_symbol, lvl_mod=lvl_mod, result=result)
+            tree_list_create(path, level=current_level_nxt, prefix=prefix +
+                             extension_symbol, lvl_mod=lvl_mod, result=result)
     return result
 
 
-def print_tree(tree_lst : list) -> None:
+def print_tree(tree_lst: list) -> None:
     """"
-    
     Printing tree from list
-    
+
     tree_lst: list with dirs for printing
     """
     print('\n'.join(tree_lst))
 
 
-
 def main():
     """Arg parce and start of program"""
     parser = argparse.ArgumentParser(description='Dir tree printing')
-    parser.add_argument('-L', metavar='<depth level>', default= -1,
+    parser.add_argument('-L', metavar='<depth level>', default=-1,
                         help=' setting depth level. if 0 => print all levels')
-    parser.add_argument('directory', nargs='?', default='.', 
-                       help='Directory to display tree for (default: current directory)')
+    parser.add_argument('directory', nargs='?', default='.',
+                        help='Directory to display tree for (default: current directory)')
     args = parser.parse_args()
     path_name = args.directory
 
     if not os.path.isdir(path_name):
-        print('"{}" does not exist'.format(path_name), file=sys.stderr)
+        print(f'"{path_name}" does not exist', file=sys.stderr)
         sys.exit(-1)
 
     path = Path(path_name)
     lvl_mod = int(args.L) >= 0
 
-    print_tree(tree(path, level=int(args.L), lvl_mod = lvl_mod))
+    print_tree(tree_list_create(path, level=int(args.L), lvl_mod=lvl_mod))
+
 
 if __name__ == "__main__":
     main()
