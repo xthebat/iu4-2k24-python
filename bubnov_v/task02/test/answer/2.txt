@@ -1,0 +1,10 @@
+dir_1
+├─── dir_x
+│    ├─── add.py
+│    └─── main.py
+├─── hello
+├─── request
+│    └─── ask.py
+└─── world
+
+3 directories, 5 files
