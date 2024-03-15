@@ -1,0 +1,12 @@
+{root_dir}
+├───{blue}dir_1{color_end}
+│   ├───{blue}dir_1_1{color_end}
+│   └───{blue}dir_1_2{color_end}
+├───{blue}dir_2{color_end}
+│   ├───{blue}dir_2_1{color_end}
+│   ├───{blue}dir_2_2{color_end}
+│   └───{blue}dir_2_3{color_end}
+└───{blue}dir_3{color_end}
+    └───{green}file_3{color_end}
+
+9 directories, 1 files, 0 links

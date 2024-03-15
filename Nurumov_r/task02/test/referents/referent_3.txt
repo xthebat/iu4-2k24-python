@@ -1,0 +1,2 @@
+[34mtest_directory
+[37m└── [32mfile3.txt
