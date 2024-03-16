@@ -1,0 +1,4 @@
+test_directory
+├── file1.txt
+├── file2.txt
+└── test_directory

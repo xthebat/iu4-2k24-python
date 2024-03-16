@@ -1,0 +1,7 @@
+dir_3
+└─── dir_new_1
+     └─── dir_new_2
+          ├─── dir_new_3
+          └─── dir_new_4
+
+5 directories, 0 files
