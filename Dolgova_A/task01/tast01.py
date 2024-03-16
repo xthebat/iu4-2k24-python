@@ -1,1 +1,4 @@
-print("Hello world")
+    from lib import func
+
+    if __name__ == '__main__':
+        func()
