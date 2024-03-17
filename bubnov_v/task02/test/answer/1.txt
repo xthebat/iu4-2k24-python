@@ -1,0 +1,7 @@
+dir_1
+├─── dir_x
+├─── hello
+├─── request
+└─── world
+
+3 directories, 2 files

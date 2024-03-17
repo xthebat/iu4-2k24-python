@@ -1,0 +1,14 @@
+dir_3
+└─── dir_new_1
+     └─── dir_new_2
+          ├─── dir_new_3
+          │    ├─── createWORLD
+          │    ├─── newWORLD
+          │    └─── openWORLD
+          └─── dir_new_4
+               ├─── case.py
+               ├─── HELLO
+               ├─── newest.txt
+               └─── start.py
+
+5 directories, 7 files
