@@ -9,9 +9,6 @@ T_LEFT = '├──'
 LINE = '│    '
 BLANK = '     '
 
-#directories_count = 0
-#files_count = 0
-
 
 def generate_tree(path: Path, counter: dict, depth=1, prefix="" ) -> str:
     result = ""
