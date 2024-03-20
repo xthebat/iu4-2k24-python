@@ -1,4 +1,10 @@
 def function_sample(x: int, y: int) -> int:
+    """
+    Returns sum of the x and y
+
+    :param x:
+    :param y:
+    """
     # auto tmp = x + y;  C++
     return x + y
 

@@ -1,0 +1,252 @@
+// CSGO-GSB5D-8Lup2-WxHJG-Wvv3i-vSLoD  default
+// CSGO-8LOzV-Gfifq-XnyOm-iK3XA-bkpNO
+
+clear
+
+viewmodel_presetpos 0
+viewmodel_fov 68
+viewmodel_offset_x 2.5
+viewmodel_offset_y 0.0
+viewmodel_offset_z -2.0
+
+cl_usenewbob false
+
+// viewmodel_presetpos 0
+// viewmodel_fov 54  // 68
+// viewmodel_offset_z -2  // -1.5
+
+fps_max 220
+
+// m_rawinput 1
+
+// net_maxroutable 1200
+// cl_cmdrate 128
+// cl_updaterate 128
+// rate 786432
+
+// cl_interpolate 1
+// cl_lagcompensation 1
+// cl_interp 1
+// cl_interp_ratio 2
+
+// cl_predictweapons 1
+// cl_predict 1
+// cl_forcepreload 0
+
+// snd_mixahead 0.025
+
+sensitivity 1.1
+
+// mat_queue_mode 2
+
+mat_monitorgamma 1.70
+// mat_monitorgamma_tv_enabled 0
+
+hud_scaling 1.20
+cl_hud_radar_scale 0.9
+cl_crosshair_sniper_width 1
+
+// Misc bind section
+
+r_drawtracers_firstperson false
+
+bind leftarrow +left
+bind rightarrow +right
+
+alias +fast_forward_time "host_timescale 10"
+alias -fast_forward_time "host_timescale 1"
+
+alias +normal_hud_scale "hud_scaling 0.80"
+alias -normal_hud_scale "hud_scaling 0.40"
+
+alias "toggle_hud_scale" "small_hud_scale"
+alias "small_hud_scale" "-normal_hud_scale; alias toggle_hud_scale large_hud_scale"
+alias "large_hud_scale" "+normal_hud_scale; alias toggle_hud_scale small_hud_scale"
+
+alias +right_hand "cl_righthand 1"
+alias -right_hand "cl_righthand 0"
+
+alias "toggle_right_hand" "right_hand_enable"
+alias "right_hand_enable" "-right_hand; alias toggle_right_hand right_hand_disable"
+alias "right_hand_disable" "+right_hand; alias toggle_right_hand right_hand_enable"
+
+// Main bind section
+
+alias +lineup_crosshair "cl_crosshairsize 1000; cl_crosshairthickness 0.0;"
+alias -lineup_crosshair "cl_crosshairsize 2.5; cl_crosshairthickness 0.4;"
+
+alias "toggle_crosshair" "disable_lineup_crosshair"
+alias "disable_lineup_crosshair" "-lineup_crosshair; alias toggle_crosshair enable_lineup_crosshair"
+alias "enable_lineup_crosshair" "+lineup_crosshair; alias toggle_crosshair disable_lineup_crosshair"
+
+alias "toggle_bunnyhop" "disable_bunnyhop"
+alias "disable_bunnyhop" "unbind mwheeldown; alias toggle_bunnyhop enable_bunnyhop"
+alias "enable_bunnyhop" "bind mwheeldown +jump; alias toggle_bunnyhop disable_bunnyhop"
+
+bind "F2" noclip
+
+alias "toggle_sound" "low_sound"
+alias "low_sound" "volume 0.05; say_team volume 0.05; alias toggle_sound middle_sound"
+alias "middle_sound" "volume 0.15; say_team volume 0.15; alias toggle_sound low_sound"
+
+bind "F5" toggle_sound
+
+volume 0.35
+voice_scale 0.4
+
+bind "1" "slot1"
+bind "2" "slot2"
+bind "3" "slot3"
+
+alias +hud "cl_draw_only_deathnotices 0; net_graph 1"
+alias -hud "cl_draw_only_deathnotices 1; net_graph 0"
+
+alias "toggle_hud" "disable_hud"
+alias "disable_hud" "-hud; alias toggle_hud enable_hud"
+alias "enable_hud" "+hud; alias toggle_hud disable_hud"
+
+alias +quickswitch "invnext;"
+alias -quickswitch "slot3; slot2; slot1"
+
+bind mouse1 "+attack"
+bind mouse2 "+attack2"
+bind mouse3 "+voicerecord"
+bind mouse4 +quickswitch
+bind mouse5 "+lookatweapon"
+
+bind "mwheelup" -lineup_crosshair
+bind "F1" "toggle cl_radar_scale 0.3 0.8"
+// bind "v" "toggle cl_righthand 0 1"
+
+bind "F4" autobuy
+
+bind "q" "slot10; +lineup_crosshair"  // moly
+bind "c" "slot8; +lineup_crosshair"  // smoke
+bind "f" "slot7; +lineup_crosshair"  // flash
+bind "4" "slot6; slot9"  // hegrande decoy
+bind "5" "slot5"  // c4
+bind "t" "+spray_menu"
+
+bind "n" toggle_hud
+bind "m" teammenu
+
+bind "z" "slot5"
+
+bind "b" "buymenu"
+bind "x" "player_ping"
+
+sv_cheats true
+
+alias toggle_voice +disable_voice
+alias +disable_voice "voice_scale 0.0; alias toggle_voice -disable_voice"
+alias -disable_voice "voice_scale 0.4; alias toggle_voice +disable_voice"
+
+//bind "capslock" toggle_voice //"clutch_mode_toggle"
+bind "capslock" "clutch_mode_toggle"
+
+bind "shift" "+duck"
+bind "alt" "+sprint"
+bind "ctrl" "-attack; -attack2"
+bind "space" "+jump"
+
+bind TAB "+showscores"
+
+// Demo bind section
+
+alias "+fw" "demo_timescale 3"
+alias "-fw" "demo_timescale 1"
+
+alias "+fw2" "demo_timescale 10"
+alias "-fw2" "demo_timescale 1"
+
+bind "F6" "exec autoexec"
+
+bind "F7" "demoui"
+bind "F8" "demo_togglepause"
+
+bind "h" "holdpos"
+
+// mute player with: voice_player_volume
+
+// Practice bind section
+
+bind "ins" "bot_place"
+bind "pgup" "bot_add_ct"
+bind "pgdn" "bot_add_t"
+
+bind "=" "+fast_forward_time"
+bind "home" "disconnect"
+bind "end" "quit"
+
+bind "\" "Say restart"
+bind "/" "Say help"
+bind "." "Say next"
+bind "," "Say prev"
+
+bind "l" "toggle viewmodel_offset_x -2 2"
+
+bind "ralt" sv_rethrow_last_grenade
+
+alias "toggle_grenadepreview" "disable_grenadepreview"
+alias "disable_grenadepreview" "cl_grenadepreview 0; sv_grenade_trajectory 0; sv_grenade_trajectory_time 10; alias toggle_grenadepreview enable_grenadepreview"
+alias "enable_grenadepreview" "cl_grenadepreview 1; sv_grenade_trajectory 1; sv_grenade_trajectory_time 10; alias toggle_grenadepreview disable_grenadepreview"
+
+bind "del" "toggle_grenadepreview"
+
+alias mirage_window_jump "setpos_exact -1210.414917 -980.932922 -167.968750;setang_exact 0.000000 73.855591 0.000000"
+
+alias mirage_spawn_t11 "setpos_exact 1136.000000 -256.000000 -167.968750;setang_exact 0.000000 270.000000 0.000000"
+alias mirage_spawn_t12 "setpos_exact 1136.000000 -160.000000 -167.968750;setang_exact 0.000000 270.000000 0.000000"
+alias mirage_spawn_t13 "setpos_exact 1136.000000 -66.000000 -167.968750;setang_exact 0.000000 270.000000 0.000000"
+alias mirage_spawn_t14 "setpos_exact 1136.000000 32.000000 -167.968750;setang_exact 0.000000 90.000000 0.000000"
+
+alias mirage_spawn_t21 "setpos_exact 1216.000000 -307.000000 -165.623856;setang_exact 0.000000 106.248779 0.000000"
+alias mirage_spawn_t22 "setpos_exact 1216.000000 -211.000000 -163.968750;setang_exact 0.000000 270.000000 0.000000"
+alias mirage_spawn_t23 "setpos_exact 1216.000000 -115.000000 -163.968750;setang_exact 0.000000 90.000000 0.000000"
+alias mirage_spawn_t24 "setpos_exact 1216.000000 -16.000000 -163.968750;setang_exact 0.000000 90.000000 0.000000"
+
+alias mirage_spawn_t31 "setpos_exact 1296.000000 -352.000000 -167.968750;setang_exact 0.000000 227.005005 0.000000"
+alias mirage_spawn_t32 "setpos_exact 1296.000000 -256.000000 -167.968750;setang_exact 0.000000 227.005005 0.000000"
+alias mirage_spawn_t33 "setpos_exact 1296.000000 -160.000000 -167.968750;setang_exact 0.000000 227.005005 0.000000"
+alias mirage_spawn_t34 "setpos_exact 1296.000000 -64.000000 -167.968750;setang_exact 0.000000 140.998535 0.000000"
+alias mirage_spawn_t35 "setpos_exact 1296.000000 32.000000 -167.968750;setang_exact 0.000000 97.371826 0.000000"
+
+alias mirage_spawn_t41 "setpos_exact 1376.000000 -304.000000 -167.968750;setang_exact 0.000000 227.005005 0.000000"
+alias mirage_spawn_t42 "setpos_exact 1376.000000 -208.000000 -163.965103;setang_exact 0.000000 227.005005 0.000000"
+alias mirage_spawn_t43 "setpos_exact 1376.000000 -112.000000 -163.965103;setang_exact 0.000000 140.998535 0.000000"
+alias mirage_spawn_t44 "setpos_exact 1376.000000 -16.000000 -167.968750;setang_exact 0.000000 140.998535 0.000000"
+
+alias mirage_insta_smoke "setpos_exact 1296.000000 32.000000 -167.968750;setang_exact 0.000000 256.459351 0.000000"
+
+alias mirage_ct "setpos_exact -1289.424438 -2418.662598 -197.142105;setang_exact 0.000000 9.014282 0.000000"
+
+alias overpass_spawn_ct1 "setpos_exact -2292.000000 692.000000 474.034241;setang_exact 0.000000 318.301392 0.000000"
+alias overpass_spawn_ct2 "setpos_exact -2258.000000 761.000000 472.281250;setang_exact 0.000000 331.995850 0.000000"
+alias overpass_spawn_ct3 "setpos_exact -2396.000000 812.000000 472.281250;setang_exact 0.000000 317.493896 0.000000"
+alias overpass_spawn_ct4 "setpos_exact -2091.000000 867.000000 480.031250;setang_exact 0.000000 312.599487 0.000000"
+alias overpass_spawn_ct5 "setpos_exact -2404.000000 652.000000 478.432617;setang_exact 0.000000 339.439087 0.000000"
+alias overpass_spawn_ct6 "setpos_exact -2120.000000 790.000000 473.099335;setang_exact 0.000000 302.958984 0.000000"
+
+alias inferno_banana "setpos_exact 287.051270 1651.811279 122.031250;setang_exact 0.000000 12.304688 0.000000"
+alias inferno_pos_ct "setpos_exact 1131.114746 2755.813232 128.016769;setang_exact 0.000000 207.932739 0.000000"
+alias inferno_pos_coffins "setpos_exact 517.484558 3139.276367 206.031250;setang_exact 0.000000 282.991333 0.000000"
+alias inferno_colon "setpos_exact 43.706947 2938.687988 160.031250;setang_exact 0.000000 326.678467 0.000000"
+alias inferno_pos3 "setpos_exact 35.755848 2730.866211 160.031250;setang_exact 0.000000 343.767700 0.000000"
+alias inferno_pos2 "setpos_exact 301.835297 2452.787354 160.031250;setang_exact 0.000000 51.525879 0.000000"
+
+alias inferno_pick3 "setpos_exact 862.546814 2596.965820 140.958313;setang_exact 0.000000 182.449951 0.000000"
+alias inferno_pick_kaf "setpos_exact 676.068176 2017.208252 132.376404;setang_exact 0.000000 89.038696 0.000000"
+alias inferno_pick_coffins "setpos_exact 777.006226 2068.604004 137.214020;setang_exact 0.000000 104.194336 0.000000"
+alias inferno_pick_dark "setpos_exact 787.959473 2371.237549 136.320221;setang_exact 0.000000 131.912842 0.000000"
+
+alias dust_mid_sniper "setpos_exact -653.434326 2434.866211 -91.929665;setang_exact 0.000000 285.831299 0.000000"
+alias dust_spawn_t1 "setpos_exact -428.000000 -843.000000 95.296356;setang_exact 0.000000 92.257690 0.000000"
+
+// bind "j" "connect 94.199.215.74:21212"
+unbind "j"
+
+// say "--> Capybara config executed <--"
+
+
+// setpos_exact 1296.000000 -160.000000 -167.968750;setang_exact 0.000000 -133.000153 0.000000
+// setpos_exact 1376.000000 -208.000000 -163.965088;setang_exact 0.000000 -133.000153 0.000000

@@ -1,3 +1,6 @@
+import argparse
+import os
+
 import pytest
 
 from sem02.syntax_samples import function_sample
@@ -78,6 +81,7 @@ def test_set():
     value_set = set(value)
 
     with pytest.raises(TypeError):
+        # noinspection PyUnresolvedReferences
         x = value_set[1]
 
 
@@ -136,3 +140,34 @@ def test_print():
 
     # BAN!
     print(f"value=" + hex(value) + " MEOW")
+
+
+def explore_directory(is_dir: bool, directories_count: int, files_count: int) -> tuple[list[str], list[str]]:
+    if is_dir:
+        style = Fore.BLUE
+        directories_count += 1
+    else:
+        style = Fore.GREEN
+        files_count += 1
+
+    string = f"{CROWBAR if is_last else T_LEFT} {style}{name}{Style.RESET_ALL}"
+    return string, directories_count, files_count
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Tree - recursive ls.")
+    parser.add_argument(
+        "path", type=str, default=os.getcwd(),
+        nargs=1, help="Path to directory that will be recursively scanned.")
+    parser.add_argument(
+        "-d", "--depth", type=int, default=-1,
+        nargs=1, help="Maximum depth of tree.")
+    args = parser.parse_args()
+    path = args.path[0]
+
+    if not os.path.isdir(path):
+        parser.error("provided string is not a valid path")
+
+    explore_directory()
+
+    tree.run(path, int(args.depth[0] if isinstance(args.depth, list) else args.depth), sys.stdout)

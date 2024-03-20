@@ -1,0 +1,42 @@
+// CSGO-GSB5D-8Lup2-WxHJG-Wvv3i-vSLoD  default
+// CSGO-8LOzV-Gfifq-XnyOm-iK3XA-bkpNO
+
+clear
+
+viewmodel_presetpos 0
+viewmodel_fov 68
+viewmodel_offset_x 2.5
+viewmodel_offset_y 0.0
+viewmodel_offset_z -2.0
+
+cl_usenewbob false
+
+// viewmodel_presetpos 0
+// viewmodel_fov 54  // 68
+// viewmodel_offset_z -2  // -1.5
+
+fps_max 220
+
+// m_rawinput 1
+
+// net_maxroutable 1200
+// cl_cmdrate 128
+// cl_updaterate 128
+// rate 786432
+
+alias +fast_forward_time "host_timescale 10"
+alias -fast_forward_time "host_timescale 1"
+
+alias +normal_hud_scale "hud_scaling 0.80"
+alias -normal_hud_scale "hud_scaling 0.40"
+
+alias "toggle_hud_scale" "small_hud_scale"
+alias "small_hud_scale" "-normal_hud_scale; alias toggle_hud_scale large_hud_scale"
+alias "large_hud_scale" "+normal_hud_scale; alias toggle_hud_scale small_hud_scale"
+
+alias +right_hand "cl_righthand 1"
+alias -right_hand "cl_righthand 0"
+
+alias "toggle_right_hand" "right_hand_enable"
+alias "right_hand_enable" "-right_hand; alias toggle_right_hand right_hand_disable"
+alias "right_hand_disable" "+right_hand; alias toggle_right_hand right_hand_enable"
