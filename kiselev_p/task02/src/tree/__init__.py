@@ -1,1 +1,1 @@
-from .tree import Tree
+from .tree import Tree, TreeException

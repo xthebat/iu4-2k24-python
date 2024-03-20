@@ -2,10 +2,17 @@ import pytest
 import sys, os
 from colorama import Fore
 
-test_dir = os.path.dirname(__file__)
-sys.path.append(os.path.join(test_dir, '..', 'src'))
+TEST_DIR = os.path.dirname(__file__)
+MODULE_DIR = os.path.join(TEST_DIR, '..', 'src')
+TEST_SUITE_DIR = "suites"
+TEST_TREE_SUITE = "test_tree.txt"
+TEST_TREE_ASC_SUITE = "test_tree_asc.txt"
+TEST_TREE_DESC_SUITE = "test_tree_desc.txt"
+TEST_TREE_DEPTH_SUITE = "test_tree_depth.txt"
 
-from tree import Tree
+sys.path.append(MODULE_DIR)
+
+from tree import Tree, TreeException
 
 @pytest.fixture
 def create_filesystem(tmp_path):  
@@ -27,39 +34,41 @@ def create_filesystem(tmp_path):
 
     return tmp_path
 
-
-def read_test_suite(suite : str) -> str:
-    with open(os.path.join(test_dir, "suites", suite), "r") as f:
+def read_test_suite(test_suite: str) -> str:
+    with open(os.path.join(TEST_DIR, TEST_SUITE_DIR, test_suite), "r") as f:
         f_str = f.read()
 
     return f_str
 
-
-def cmp_expected_and_real(suite : str, capsys, create_filesystem) ->None:
+@pytest.mark.parametrize(
+    "suite,depth,sort",
+    [
+        (TEST_TREE_SUITE, None, None),
+        (TEST_TREE_ASC_SUITE, None, "asc"),
+        (TEST_TREE_DESC_SUITE, None, "desc"),
+        (TEST_TREE_DEPTH_SUITE, 2, None)
+    ]
+)
+def test_tree_build(create_filesystem, capsys, suite: str, depth: int, sort: str):
     tree = Tree()
-    tree.print()
+    tree.build(create_filesystem, depth, sort)
 
-    captured = capsys.readouterr()
-    expected_str = read_test_suite(suite)
-    expected_str = expected_str.format(head_dir=create_filesystem, blue=Fore.BLUE, reset=Fore.RESET)
+    actual = capsys.readouterr().out
+    expected = read_test_suite(suite)
+    expected = expected.format(head_dir=create_filesystem, blue=Fore.BLUE, reset=Fore.RESET)
     
-    assert captured.out == expected_str
+    assert actual == expected
 
-
-def test_tree(create_filesystem, monkeypatch, capsys):
-    monkeypatch.setattr("sys.argv", ["", f"{create_filesystem}"])
-    cmp_expected_and_real("test_tree.txt", capsys, create_filesystem)    
-
-
-def test_tree_asc(create_filesystem, monkeypatch, capsys):
-    monkeypatch.setattr("sys.argv", ["", f"{create_filesystem}", "-s", "asc"])
-    cmp_expected_and_real("test_tree_asc.txt", capsys, create_filesystem)
-
-
-def test_tree_desc(create_filesystem, monkeypatch, capsys):
-    monkeypatch.setattr("sys.argv", ["", f"{create_filesystem}", "-s", "desc"])
-    cmp_expected_and_real("test_tree_desc.txt", capsys, create_filesystem)
-
-def test_tree_depth(create_filesystem, monkeypatch, capsys):
-    monkeypatch.setattr("sys.argv", ["", f"{create_filesystem}", "-d", "2"])
-    cmp_expected_and_real("test_tree_depth.txt", capsys, create_filesystem)
+@pytest.mark.parametrize(
+    "depth,sort,expected",
+    [
+        (-1, None, "-1 is an incorrect depth!"),
+        (None, "gav", "gav is an incorrect sort option!")
+    ]
+)
+def test_bad_parameters(create_filesystem, depth: int, sort: str, expected: str):
+    with pytest.raises(TreeException) as exc_info:
+        tree = Tree()
+        tree.build(create_filesystem, depth, sort)
+        actual = str(exc_info.value)
+        assert actual == expected

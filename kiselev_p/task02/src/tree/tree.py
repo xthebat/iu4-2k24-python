@@ -1,82 +1,78 @@
-from argparse import ArgumentParser
 from colorama import Fore
 import os
 
+class TreeException(Exception):
+    pass
 
 class Tree:
 
-    def __init__(self):
-        self.__parseOption()
+    def build(self, path: str, depth: int=None, sort: str=None) -> None:
+        """The main method
 
-    def __parseOption(self) -> None:
-        """Parses the arguments passed on the command line
-        """        
+        Args:
+            path: directory path
+            depth: recursion depth
+            sort: sort content in directory
+        """
 
-        parser = ArgumentParser(description="Build tree of filesystem")
+        if not os.path.isdir(path):
+            raise TreeException(f"{path} is an incorrect directory!")
+        if (depth is not None) and (depth < 0):
+            raise TreeException(f"{depth} is an incorrect depth!")
+        if sort not in ["asc", "desc", None]:
+            raise TreeException(f"{sort} is an incorrect sort option!")
+        
+        self.__depth = depth
+        self.__sort = sort
+        self.__printDir(path)
 
-        parser.add_argument("path",type=str, help="start directory")
-        parser.add_argument("-d", "--depth", dest="depth", default=None, type=int,
-                            help="tree display depth [default: %(default)s]")
-        parser.add_argument("-s", "--sort", dest="sort", default=None, type=str,
-                            choices=["asc", "desc"], help="sorting asc/desc [default: %(default)s]")
-        self.__option = parser.parse_args()
-
-
-    def print(self) -> None:
-        """The main method. Print tree of filesystem
-        """        
-
-        if os.path.isdir(self.__option.path):
-            print(f"{Fore.BLUE}{self.__option.path}{Fore.RESET}")
-            self.__printDir(self.__option.path)
-        else:
-            print(f"Directory {self.__option.path} does not exist!") 
-
-    
-    def __printDir(self, path : str, tmp_depth : int = 0, prefix : str = "") -> None:
+    def __printDir(self, path: str, tmp_depth: int=0, tmp_preffix: str="") -> None:
         """Prints all objects in the directory recursively
 
         Args:
             path: directory path
             tmp_depth: current recursion depth
-            prefix: current prefix for printing
-        """        
-        
-        if tmp_depth == self.__option.depth:
+            tmp_prefix: current prefix for printing
+        """
+
+        if not tmp_depth:
+            print(f"{Fore.BLUE}{path}{Fore.RESET}")
+
+        if tmp_depth == self.__depth:
             return
         
         path_list = os.listdir(path)
 
-        if self.__option.sort is not None:
-            path_list.sort(reverse=(self.__option.sort == "desc"))
+        if self.__sort is not None:
+            path_list.sort(reverse=(self.__sort == "desc"))
 
         for tmp_path in path_list:
-            tmp_prefix = prefix + ("'---" if tmp_path == path_list[-1] else "|---")
-            next_prefix = prefix + ("    " if tmp_path == path_list[-1] else "|   ")
+            tmp_prefix = tmp_preffix + ("'---" if tmp_path == path_list[-1] else "|---")
+            next_prefix = tmp_preffix + ("    " if tmp_path == path_list[-1] else "|   ")
 
             abs_path = os.path.join(path, tmp_path)
 
-            self.__printName(tmp_prefix, abs_path)
+            self.__printContent(tmp_prefix, abs_path)
 
             if os.path.isdir(abs_path):
                 self.__printDir(abs_path, tmp_depth + 1, next_prefix)
 
+    def __printContent(self, prefix: str, abs_path: str) -> None:
+            """Prints the object located in the directory
+            in a certain color depending on the type
 
-    def __printName(self, prefix : str, abs_path : str) -> None:
-        """Prints the object located in the directory in a certain color depending on the type
+            Args:
+                prefix (str): prefix for printing
+                abs_path (str): absolute path of the object
+            """        
+            
+            path = os.path.basename(abs_path)
 
-        Args:
-            prefix (str): prefix for printing
-            abs_path (str): absolute path of the object
-        """        
-        
-        path = os.path.basename(abs_path)
+            if os.path.isdir(abs_path):
+                print(f"{prefix}{Fore.BLUE}{path}{Fore.RESET}")
 
-        if os.path.isdir(abs_path):
-            print(f"{prefix}{Fore.BLUE}{path}{Fore.RESET}")
-
-        if os.path.isfile(abs_path):
-            if os.path.islink(abs_path):
-                print(f"{prefix}{Fore.GREEN}{path} -> {os.readlink(abs_path)}{Fore.RESET}")
-            else:
-                print(f"{prefix}{path}")
+            if os.path.isfile(abs_path):
+                if os.path.islink(abs_path):
+                    print(f"{prefix}{Fore.GREEN}{path} -> {os.readlink(abs_path)}{Fore.RESET}")
+                else:
+                    print(f"{prefix}{path}")
