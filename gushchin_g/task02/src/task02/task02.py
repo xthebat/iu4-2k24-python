@@ -3,6 +3,7 @@ import sys
 
 from enum import Enum
 from typing import List
+from typing import Tuple
 
 
 class ArgumentsIDs(Enum):
@@ -15,22 +16,28 @@ class FSElementsListIDs(Enum):
     TYPE = 1
 
 
+class Indentations(Enum):
+    EMPTY = "    "
+    END = "└── "
+    INTERVAL = "├── "
+    VERTICAL = "│   "
+
+
 class PathsTypes(Enum):
     FILE = 0
     DIRRECTORY = 1
+
+
+class ScanResultIDs(Enum):
+    DIRRECTORIES_COUNT = 1
+    FILES_COUNT = 2
+    RESULT = 0
 
 
 class TerminalStyles(Enum):
     BLUE = "\033[34m"
     GREEN = "\033[32m"
     RESSET = "\033[0m"
-
-
-class Indentations(Enum):
-    EMPTY = "    "
-    END = "└── "
-    INTERVAL = "├── "
-    VERTICAL = "│   "
 
 
 def generate_indentation(lines: List[bool]) -> str:
@@ -76,16 +83,24 @@ def get_reqursion_number(arguments: List[str]) -> int:
         return 0
 
 
-def scan_dirrectory(scan_dir_path: str, curr_req: int, lines: List[bool]) -> str:
+def scan_dirrectory(
+    scan_dir_path: str, curr_req: int, lines: List[bool]
+) -> Tuple[str, int, int]:  # Tuple[paths, dirs_count, files_count]
     result: str = ""
 
     indentation = generate_indentation(lines)
 
     union_list: List[List] = []  # List[[str, bool]]
 
+    directories_count: int = 0
+    files_count: int = 0
+
     for dirpaths, dirnames, filenames in os.walk(scan_dir_path):
         union_list = generate_union_list(dirnames=dirnames, filenames=filenames)
         dirs_count = len(dirnames)
+
+        directories_count = len(dirnames)
+        files_count = len(filenames)
         break
 
     dirrectory_iterator: int = 0
@@ -120,11 +135,15 @@ def scan_dirrectory(scan_dir_path: str, curr_req: int, lines: List[bool]) -> str
                 curr_req - 1,
                 lines,
             )
-            result = f"{result}{subdirrectory_scan_result}"
+            directories_count += subdirrectory_scan_result[
+                ScanResultIDs.DIRRECTORIES_COUNT.value
+            ]
+            files_count += subdirrectory_scan_result[ScanResultIDs.FILES_COUNT.value]
+            result = f"{result}{subdirrectory_scan_result[ScanResultIDs.RESULT.value]}"
 
             lines.pop()
 
-    return result
+    return result, directories_count, files_count
 
 
 def set_style(input: str, style: str) -> str:
@@ -142,7 +161,16 @@ def main():
     lines: List[bool] = []
 
     print(check_path)
-    print(scan_dirrectory(check_path, reqursion, lines), end="")
+
+    scan_dirrectory_result: Tuple[str, int, int] = scan_dirrectory(
+        check_path, reqursion, lines
+    )
+    print(scan_dirrectory_result[ScanResultIDs.RESULT.value])
+    print(
+        f"{scan_dirrectory_result[ScanResultIDs.DIRRECTORIES_COUNT.value]} directories",
+        end=", ",
+    )
+    print(f"{scan_dirrectory_result[ScanResultIDs.FILES_COUNT.value]} files")
 
 
 if __name__ == "__main__":
