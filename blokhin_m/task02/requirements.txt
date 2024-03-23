@@ -1,0 +1,2 @@
+pytest~=7.4.4
+colorama~=0.4.6
