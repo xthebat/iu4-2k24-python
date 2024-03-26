@@ -10,7 +10,7 @@ from parse_smd import parse_file
         [85, 91, 'a_move_walkNE.smd'],
         [85, 67, 'a_move_runSE.smd'],
         [85, 64, 'a_move_c4_crouchWalkW.smd'],
-        [85, 63, 'a_move_c4_crouchWalkSE.smd'],
+        [85, 63, 'a_move_c4_crouchWalkSE.smd.smd'],
         [85, 90, 'a_move_knife_align.smd']
     ]
 )

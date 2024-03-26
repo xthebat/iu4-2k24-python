@@ -7,8 +7,8 @@ def main() -> None:
     parser = argparse.ArgumentParser(description='Command for modified smd file')
     parser.add_argument('file', type=str,
                         help='Name of the smd file to be modified')
-    parser.add_argument('-dir', type=str, default=f'{os.path.dirname(__file__)}',
-                        help='Directory where the file are stored (default: current directory)')
+    parser.add_argument('-dir', type=str, default=f'{os.getcwd()}',
+                        help='Directory where the file are stored (default: working directory)')
 
     args = parser.parse_args()
     create_new_smd(parse_file(args.file, args.dir))
