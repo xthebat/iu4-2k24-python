@@ -101,12 +101,12 @@ def validate_arguments(args) -> bool:
 
 
 def main():
+    init()
     args = parse_arguments()
     if not validate_arguments(args):
         return
     tree, directories_count, files_count = explore_directory(
         args.directory, args.depth)
-    init()
     print_tree(tree)
     print(
         f"\n{Fore.WHITE}Found {directories_count} directories and {files_count} files")
