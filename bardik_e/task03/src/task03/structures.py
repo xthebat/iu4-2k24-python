@@ -1,19 +1,14 @@
-from task03.smd_structures import *
+from dataclasses import dataclass
+from task03.smd_structures import BonePositionData, BoneInitData, FrameData
 
 
 @dataclass
-class AbstractDocument:
-	def out_string(self):
-		raise NotImplementedError
+class SMDDocument:
+	document_version: int
+	bones: dict[int, BoneInitData]
+	frames: dict[int, FrameData]
 
-
-@dataclass
-class SMDDocument(AbstractDocument):
-	document_version: int = 1
-	bones: dict[int, BoneInitData] = field(default_factory=dict)
-	frames: dict[int, FrameData] = field(default_factory=dict)
-
-	def out_string(self) -> str:
+	def to_string(self) -> str:
 		"""
 		Generator method that yields the document line by line.
 		:return: line that will be written to file in SMD format
@@ -21,28 +16,22 @@ class SMDDocument(AbstractDocument):
 		yield f"version {self.document_version}\n"
 		yield "nodes\n"
 
-		for bone_id in sorted(list(self.bones.keys())):
+		for bone_id in sorted(self.bones.keys()):
 			yield f"\t{bone_id} {self.bones[bone_id].bone_name} {self.bones[bone_id].bone_parent_id}\n"
 
 		yield "end\n"
 		yield "skeleton\n"
 
-		for frame_id in sorted(list(self.frames.keys())):
+		for frame_id in sorted(self.frames.keys()):
 			yield f"\ttime {frame_id}\n"
 
-			for bone_data in self.frames[frame_id].get_out_string():
+			for bone_data in self.frames[frame_id].to_string():
 				yield f"\t\t{bone_data}"
 
 		yield "end\n"
 
-
-class AbstractDocumentFabric:
-	def create_document(self, doc_string: str) -> AbstractDocument:
-		raise NotImplementedError
-
-
-class SMDDocumentFabric(AbstractDocumentFabric):
-	def create_document(self, doc_string: str) -> SMDDocument:
+	@classmethod
+	def from_string(cls, doc_string: str):
 		"""
 		Method that creates an internal representation of the SMD document from string.
 		:param doc_string: SMD document text
@@ -54,13 +43,17 @@ class SMDDocumentFabric(AbstractDocumentFabric):
 		frame_section = False
 
 		# number of handling time section
-		last_frame_number = 0
+		last_frame_number: int = -1
 
-		result = SMDDocument()
+		# class fields
+		doc_version: int = 1
+		bones_map: dict[int, BoneInitData] = dict()
+		frames_map: dict[int, FrameData] = dict()
+		bone_position_map: dict[int, BonePositionData] = dict()
 
-		for line in doc_string.split("\n"):
+		for line in doc_string.splitlines():
 			if line.startswith("version"):
-				result.document_version = int(line.split()[1])
+				doc_version = int(line.split()[1])
 
 			elif line.startswith("nodes"):
 				bone_section = True
@@ -73,23 +66,24 @@ class SMDDocumentFabric(AbstractDocumentFabric):
 				frame_section = False
 
 			elif bone_section:
-				bone_data = line.strip().split()
-				result.bones[int(bone_data[0])] = BoneInitData(int(bone_data[0]), bone_data[1], int(bone_data[2]))
+				bone_data = BoneInitData.from_string(line)
+				bones_map[bone_data.bone_id] = bone_data
 
 			elif frame_section:
-				line_data = line.strip().split()
+				if line.strip().startswith("time"):
+					if last_frame_number != -1:
+						frames_map[last_frame_number].frame_position_data = bone_position_map.copy()
+						bone_position_map = dict()
 
-				if line_data[0] == "time":
-					last_frame_number = int(line_data[1])
-					result.frames[last_frame_number] = FrameData(last_frame_number)
+					frame = FrameData.from_string(line)
+					last_frame_number = frame.frame_id
+					frames_map[last_frame_number] = frame
 
 				else:
-					bone_frame_data = list(map(float, line_data))
-					bone_id = int(bone_frame_data[0])
+					bone_position_data = BonePositionData.from_string(line)
+					bone_position_map[bone_position_data.bone_id] = bone_position_data
 
-					bone_data = BonePositionData(bone_id, bone_frame_data[1], bone_frame_data[2],
-						bone_frame_data[3], bone_frame_data[4], bone_frame_data[5], bone_frame_data[6])
+		if last_frame_number != -1:
+			frames_map[last_frame_number].frame_position_data = bone_position_map.copy()
 
-					result.frames[last_frame_number].frame_position_data[bone_id] = bone_data
-
-		return result
+		return cls(doc_version, bones_map, frames_map)
